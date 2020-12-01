@@ -70,7 +70,7 @@ def tick():
 		pause_total = start_t - start_t
 		pause_state = 0
 		splits = [];
-	if i == 8:
+	if i == 8 and len(splits) > 0:
 		splits.pop()
 	if i == 9:
 		f = open(directory + datetime.now().strftime('%m_%d_%y_%H_%M_%S.txt'), 'w')
