@@ -1,6 +1,5 @@
 import sys
 import os
-import time
 from datetime import datetime
 
 if len(sys.argv) < 2:
