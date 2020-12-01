@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 from datetime import datetime
 
 if len(sys.argv) < 2:
@@ -71,8 +72,8 @@ def tick():
 	if i == 9:
 		f = open(directory + datetime.now().strftime('%m_%d_%y_%H_%M_%S.txt'), 'w')
 		s = ''
-		for split in splits:
-			s += format_delta(split) + '\n'
+		for i in range(len(splits)):
+			s += split_names[i] + ': ' + format_delta(splits[i]) + '\n'
 		f.write(s)
 		f.close()
 	if i == 0:
