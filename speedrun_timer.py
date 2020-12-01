@@ -44,7 +44,7 @@ def tick():
 	s += G + 'start time:' + W + ' ' + format_time(start_t) + '\n\n'
 	s += ''
 	for i in range(len(splits)):
-		s += split_names[i] + ': ' + G + format_delta(splits[i][0] - splits[i][1]) + W + '\n'
+		s += split_names[i] + ': ' + G + format_delta(splits[i]) + W + '\n'
 	if len(splits) < len(split_names):
 		s += split_names[len(splits)] + ': ' + split_text[pause_state] + '\n'
 	s += '\n' + G + '1:' + W + ' split, ' + G + '2:' + W + ' ' + pause_text[pause_state] + ', ' + G + '3:' + W + ' restart, ' + G + '8:' + W + ' delete split, ' + G + '9:' + W + ' save, ' + G + '0:' + W + ' quit\n'
@@ -55,7 +55,7 @@ def tick():
 	except ValueError:
 		i = -1
 	if i == 1 and pause_state == 0 and len(splits) < len(split_names):
-		splits.append([datetime.now(), (start_t + pause_total)])
+		splits.append(datetime.now() - (start_t + pause_total))
 	if i == 2:
 		pause_state = (pause_state + 1) % 2
 		if pause_state == 0:
@@ -73,7 +73,7 @@ def tick():
 		f = open(directory + datetime.now().strftime('%m_%d_%y_%H_%M_%S.txt'), 'w')
 		s = ''
 		for split in splits:
-			s += format_delta(split[0] - split[1]) + '\n'
+			s += format_delta(split) + '\n'
 		f.write(s)
 		f.close()
 	if i == 0:
