@@ -57,7 +57,11 @@ def tick():
 		i = int(raw_input())
 	except ValueError:
 		i = -1
-	if i == 1 and pause_state == 0 and len(splits) < len(split_names):
+	if i == 1 and len(splits) < len(split_names):
+		if pause_state == 1:
+			t = datetime.now()
+			pause_total += t - pause_start
+			pause_start = t
 		splits.append(datetime.now() - (start_t + pause_total))
 	if i == 2:
 		pause_state = (pause_state + 1) % 2
