@@ -43,10 +43,13 @@ def tick():
 	s = ''
 	s += G + 'start time:' + W + ' ' + format_time(start_t) + '\n\n'
 	s += ''
-	for i in range(len(splits)):
-		s += split_names[i] + ': ' + G + format_delta(splits[i]) + W + '\n'
-	if len(splits) < len(split_names):
-		s += split_names[len(splits)] + ': ' + split_text[pause_state] + '\n'
+	for i in range(len(split_names)):
+		s += split_names[i] + ': '
+		if i < len(splits):
+			s += G + format_delta(splits[i]) + W
+		if i == len(splits):
+			s += split_text[pause_state]
+		s += '\n'
 	s += '\n' + G + '1:' + W + ' split, ' + G + '2:' + W + ' ' + pause_text[pause_state] + ', ' + G + '3:' + W + ' restart, ' + G + '8:' + W + ' delete split, ' + G + '9:' + W + ' save, ' + G + '0:' + W + ' quit\n'
 	write(s)
 
