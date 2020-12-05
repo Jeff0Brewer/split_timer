@@ -17,13 +17,17 @@ name_len += 1
 for i in range(len(split_names)):
 	for j in range(name_len - len(split_names[i])):
 		split_names[i] += ' '
-best = open(directory + 'best.txt', 'r').read().split('\n')
-for i in range(len(best)):
-	best[i] = best[i].split(':')
-	if len(best[i]) > 1:
-		best[i] = timedelta(0,float(best[i][2]),0,0,int(best[i][1]),int(best[i][0]))
-	else:
-		best.remove(best[i])
+best = []
+if os.path.exists(directory + 'best.txt'):
+	best = open(directory + 'best.txt', 'r').read().split('\n')
+	for i in range(len(best)):
+		best[i] = best[i].split(':')
+		if len(best[i]) > 1:
+			best[i] = timedelta(0,float(best[i][2]),0,0,int(best[i][1]),int(best[i][0]))
+		else:
+			best.remove(best[i])
+for i in range(len(split_names) - len(best)):
+	best.append(timedelta(seconds = 3600))
 
 R = '\033[0;31m';
 G = '\033[0;32m';
@@ -64,7 +68,7 @@ def tick():
 
 	pause_text = ['pause', 'resume']
 	split_text = [B + 'IN PROGRESS' + W, R + 'PAUSED' + W]
-	sign_text = [R, G + '-']
+	sign_text = [R + '+', G + '-']
 
 	s = ''
 	s += G + 'start time:' + W + ' ' + format_time(start_t) + '\n\n'
@@ -75,9 +79,9 @@ def tick():
 		if i < len(splits):
 			best_seconds += best[i].total_seconds()
 			sec = splits[i].total_seconds() - best_seconds
-			st = 0
-			if sec < 0:
-				st = 1
+			st = 1
+			if sec > 0 and abs(sec) > .001:
+				st = 0
 			s += W + format_total(splits[i]) + G + ' | ' + sign_text[st] + format_delta(timedelta(seconds = abs(sec))) + W
 		if i == len(splits):
 			s += split_text[pause_state]
@@ -116,17 +120,19 @@ def tick():
 		f.write(s)
 		f.close()
 		s = ''
-		base = 0
-		for i in range(len(best)):
-			if(i < len(splits)):
-				level = splits[i].total_seconds() - base
-				if level < best[i].total_seconds():
-					best[i] = timedelta(seconds = level)
-				base = splits[i].total_seconds()
-			s += format_total(best[i]) + '\n'
-		f = open(directory + 'best.txt', 'w')
-		f.write(s)
-		f.close()
+		write(W + 'commit times to personal best file?\n' + G + '0:' + W +' yes ' + G + '1:' + W + ' no\n')
+		if int(raw_input()) == 0:
+			base = 0
+			for i in range(len(best)):
+				if(i < len(splits)):
+					level = splits[i].total_seconds() - base
+					if level < best[i].total_seconds():
+						best[i] = timedelta(seconds = level)
+					base = splits[i].total_seconds()
+				s += format_total(best[i]) + '\n'
+			f = open(directory + 'best.txt', 'w')
+			f.write(s)
+			f.close()
 	if in_ == 0:
 		sys.stdout.write(W)
 		exit()
