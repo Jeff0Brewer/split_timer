@@ -120,8 +120,8 @@ def tick():
 		f.write(s)
 		f.close()
 		s = ''
-		write(W + 'commit times to personal best file?\n' + G + '0:' + W +' yes ' + G + '1:' + W + ' no\n')
-		if int(raw_input()) == 0:
+		write(W + 'commit times to personal best file?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
+		if int(raw_input()) == 1:
 			base = 0
 			for i in range(len(best)):
 				if(i < len(splits)):
