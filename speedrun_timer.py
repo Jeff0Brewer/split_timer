@@ -79,12 +79,13 @@ def tick():
 	s = ''
 	s += G + 'start time:' + W + ' ' + format_time(start_t) + '\n\n'
 	s += ''
-	best_seconds = 0
 	for i in range(len(split_names)):
 		s += split_names[i] + G + '| '
 		if i < len(splits):
-			best_seconds += best[i].total_seconds()
-			sec = splits[i].total_seconds() - best_seconds
+			last = 0
+			if i > 0:
+				last = splits[i - 1].total_seconds()
+			sec = splits[i].total_seconds() - last - best[i].total_seconds()
 			st = 1
 			if sec > 0 and abs(sec) > .001:
 				st = 0
