@@ -27,7 +27,7 @@ if os.path.exists(directory + 'best.txt'):
 		else:
 			best.remove(best[i])
 for i in range(len(split_names) - len(best)):
-	best.append(timedelta(seconds = 3600))
+	best.append(timedelta(seconds = 36000))
 
 R = '\033[0;31m';
 G = '\033[0;32m';
@@ -52,6 +52,12 @@ def format_total(a):
 	return str(a)[0:11]
 def format_time(a):
 	return a.strftime('%-I:%M:%S %p')
+def get_input():
+	try:
+		in_ = int(raw_input())
+	except ValueError:
+		in_ = -1
+	return in_
 
 
 start_t = datetime.now()
@@ -82,17 +88,16 @@ def tick():
 			st = 1
 			if sec > 0 and abs(sec) > .001:
 				st = 0
-			s += W + format_total(splits[i]) + G + ' | ' + sign_text[st] + format_delta(timedelta(seconds = abs(sec))) + W
+			s += W + format_total(splits[i])
+			if(abs(sec) < 3600):
+				s += G + ' | ' + sign_text[st] + format_delta(timedelta(seconds = abs(sec))) + W
 		if i == len(splits):
 			s += split_text[pause_state]
 		s += W + '\n'
 	s += '\n' + G + '1:' + W + ' split, ' + G + '2:' + W + ' ' + pause_text[pause_state] + ', ' + G + '3:' + W + ' restart, ' + G + '8:' + W + ' delete split, ' + G + '9:' + W + ' save, ' + G + '0:' + W + ' quit\n'
 	write(s)
 
-	try:
-		in_ = int(raw_input())
-	except ValueError:
-		in_ = -1
+	in_ = get_input()
 	if in_ == 1 and len(splits) < len(split_names):
 		if pause_state == 1:
 			t = datetime.now()
@@ -106,12 +111,16 @@ def tick():
 		else:
 			pause_start = datetime.now()
 	if in_ == 3:
-		start_t = datetime.now();
-		pause_total = start_t - start_t
-		pause_state = 0
-		splits = [];
+		write(W + 'restart and clear memory?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
+		if get_input() == 1:
+			start_t = datetime.now();
+			pause_total = start_t - start_t
+			pause_state = 0
+			splits = [];
 	if in_ == 8 and len(splits) > 0:
-		splits.pop()
+		write(W + 'delete last split?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
+		if get_input() == 1:
+			splits.pop()
 	if in_ == 9:
 		s = ''
 		for i in range(len(splits)):
@@ -121,7 +130,7 @@ def tick():
 		f.close()
 		s = ''
 		write(W + 'commit times to personal best file?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
-		if int(raw_input()) == 1:
+		if get_input() == 1:
 			base = 0
 			for i in range(len(best)):
 				if(i < len(splits)):
@@ -134,8 +143,10 @@ def tick():
 			f.write(s)
 			f.close()
 	if in_ == 0:
-		sys.stdout.write(W)
-		exit()
+		write(W + 'quit?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
+		if get_input() == 1:
+			sys.stdout.write(W)
+			exit()
 	tick()
 tick()
 
