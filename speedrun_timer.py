@@ -143,10 +143,8 @@ def tick():
 			f.write(s)
 			f.close()
 	if in_ == 0:
-		write(W + 'quit?\n' + G + '0:' + W +' no ' + G + '1:' + W + ' yes\n')
-		if get_input() == 1:
-			sys.stdout.write(W)
-			exit()
+		sys.stdout.write(W)
+		exit()
 	tick()
 tick()
 
