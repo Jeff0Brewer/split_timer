@@ -27,7 +27,7 @@ if os.path.exists(directory + 'best.txt'):
 		else:
 			best.remove(best[i])
 for i in range(len(split_names) - len(best)):
-	best.append(timedelta(seconds = 36000))
+	best.append(timedelta(seconds = 99999))
 
 R = '\033[0;31m';
 G = '\033[0;32m';
@@ -74,10 +74,27 @@ def tick():
 
 	pause_text = ['pause', 'resume']
 	split_text = [B + 'IN PROGRESS' + W, R + 'PAUSED' + W]
-	sign_text = [R + '+', G + '-']
+	sign_text = [W + '+', G + '-']
+
+	best_time = 0
+	for i in range(len(best)):
+		sec = best[i].total_seconds()
+		if sec != 99999:
+			best_time += sec
 
 	s = ''
-	s += G + 'start time:' + W + ' ' + format_time(start_t) + '\n\n'
+	name = directory.split('/')[:-1]
+	for i in range(len(name)):
+		if i == len(name) - 1:
+			s += G
+		else:
+			s += W
+		s += name[i] + '/'
+	s += '\n'
+
+	s += G + 'start time: ' + W + format_time(start_t)
+	if best_time < 99999:
+		s += G + '  best combined: ' + W + format_delta(timedelta(seconds = best_time)) + '\n\n'
 	s += ''
 	for i in range(len(split_names)):
 		s += split_names[i] + G + '| '
